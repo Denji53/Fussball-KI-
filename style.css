@@ -1,5 +1,15 @@
 .Start{
     border: 1px solid #000000;
     margin-top: 30px;
-    
+    display: flex;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.Heading{
+    display: flex;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
 }
