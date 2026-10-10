@@ -1,13 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="de">
 <head>
-    <link rel="stylesheet " href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kamera Start-Schritt</title>
+    <!-- Verknüpfung zur externen CSS-Datei für das Design -->
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-       <h1 class = heading> Hi! Willst du anfangen?</h1>
-       <button class = start> START </button> 
-</body>
 
+    <h1>Kamera-Check</h1>
+    
+    <!-- Der gewünschte Start-Button -->
+    <button id="startButton">Hi, wollen wir anfangen?</button>
+
+    <!-- Das Video-Element, das später das Live-Bild zeigt (zu Beginn versteckt) -->
+    <video id="cameraStream" autoplay playsinline></video>
+
+    <!-- Verknüpfung zur externen JavaScript-Datei (defer sorgt dafür, dass das Script lädt, wenn das HTML bereit ist) -->
+    <script src="script.js" defer></script>
+
+</body>
 </html>
