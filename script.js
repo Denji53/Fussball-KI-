@@ -7,13 +7,15 @@ let faceLandmarker = undefined;
 let runningMode = "VIDEO";
 let webcamRunning = false;
 
-// 1. MediaPipe Face Landmarker initialisieren (mit stabilerem CDN-Pfad)
+// Button zu Beginn deaktivieren, bis die KI geladen ist
+startButton.disabled = true;
+startButton.innerText = "Lade KI-Modell...";
+
+// 1. MediaPipe Face Landmarker initialisieren
 async function createFaceLandmarker() {
     try {
         const { FaceLandmarker, FilesetResolver } = vision;
         
-        statusBox.innerText = "Lade KI-Modell...";
-
         const filesetResolver = await FilesetResolver.forVisionTasks(
             "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.9/wasm"
         );
@@ -28,11 +30,14 @@ async function createFaceLandmarker() {
             numFaces: 1
         });
         
-        statusBox.innerText = "KI bereit! Klicke auf Start.";
+        // Wenn alles geladen ist, aktivieren wir den Button wieder
+        startButton.disabled = false;
+        startButton.innerText = "Hi, wollen wir anfangen?";
+        statusBox.innerText = "KI bereit!";
         statusBox.style.color = "blue";
     } catch (error) {
         console.error("Fehler beim Laden des KI-Modells:", error);
-        statusBox.innerText = "Fehler beim Laden der KI (Siehe Konsole)";
+        statusBox.innerText = "Fehler beim Laden der KI";
         statusBox.style.color = "red";
     }
 }
@@ -42,7 +47,7 @@ createFaceLandmarker();
 // 2. Button-Klick: Kamera starten
 startButton.addEventListener('click', async () => {
     if (!faceLandmarker) {
-        alert("Das KI-Modell ist noch nicht bereit oder das Laden ist fehlgeschlagen.");
+        alert("Das KI-Modell ist noch nicht bereit.");
         return;
     }
 
