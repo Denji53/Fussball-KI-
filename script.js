@@ -1,3 +1,5 @@
+import { FaceLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.9/+esm";
+
 const startButton = document.getElementById('startButton');
 const videoElement = document.getElementById('cameraStream');
 const container = document.getElementById('container');
@@ -7,15 +9,9 @@ let faceLandmarker = undefined;
 let runningMode = "VIDEO";
 let webcamRunning = false;
 
-// Button zu Beginn deaktivieren, bis die KI geladen ist
-startButton.disabled = true;
-startButton.innerText = "Lade KI-Modell...";
-
 // 1. MediaPipe Face Landmarker initialisieren
 async function createFaceLandmarker() {
     try {
-        const { FaceLandmarker, FilesetResolver } = vision;
-        
         const filesetResolver = await FilesetResolver.forVisionTasks(
             "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.9/wasm"
         );
@@ -30,14 +26,14 @@ async function createFaceLandmarker() {
             numFaces: 1
         });
         
-        // Wenn alles geladen ist, aktivieren wir den Button wieder
+        // Button freigeben, sobald die KI bereit ist
         startButton.disabled = false;
         startButton.innerText = "Hi, wollen wir anfangen?";
         statusBox.innerText = "KI bereit!";
         statusBox.style.color = "blue";
     } catch (error) {
         console.error("Fehler beim Laden des KI-Modells:", error);
-        statusBox.innerText = "Fehler beim Laden der KI";
+        statusBox.innerText = "Fehler beim Laden der KI (Siehe Konsole)";
         statusBox.style.color = "red";
     }
 }
@@ -61,7 +57,6 @@ startButton.addEventListener('click', async () => {
         webcamRunning = true;
 
         videoElement.addEventListener('loadeddata', predictWebcam);
-
     } catch (error) {
         console.error("Kamera-Fehler:", error);
         alert("Kamerazugriff verweigert oder nicht unterstützt.");

@@ -21,7 +21,12 @@ button {
     margin-top: 20px;
 }
 
-button:hover {
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
     background-color: #0056b3;
 }
 
@@ -36,7 +41,6 @@ video {
     background: #000;
 }
 
-/* Design für die Info-Box unter dem Video */
 #statusBox {
     margin-top: 15px;
     font-size: 20px;

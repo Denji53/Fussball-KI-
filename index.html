@@ -5,24 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Station 6 - Face Landmarker</title>
     <link rel="stylesheet" href="style.css">
-    
-    <!-- MediaPipe Vision Tasks für JavaScript laden -->
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
     <h1>Kamera- & Gesichtserkennung</h1>
     
-    <button id="startButton">Hi, wollen wir anfangen?</button>
+    <!-- Button startet deaktiviert, bis die KI geladen ist -->
+    <button id="startButton" disabled>Lade KI-Modell...</button>
 
-    <!-- Container für Video und Status-Anzeige -->
     <div id="container" style="display: none;">
         <video id="cameraStream" autoplay playsinline></video>
-        <!-- Ein kleines Textfeld, um den erkannten Yaw-Wert direkt live zu sehen -->
-        <div id="statusBox">Gesicht wird gesucht...</div>
+        <div id="statusBox">Warte auf KI...</div>
     </div>
 
-    <script src="script.js" defer></script>
+    <!-- WICHTIG: type="module" ermöglicht den direkten Import der KI -->
+    <script type="module" src="script.js"></script>
 
 </body>
 </html>
