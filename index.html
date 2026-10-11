@@ -3,21 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kamera Start-Schritt</title>
-    <!-- Verknüpfung zur externen CSS-Datei für das Design -->
+    <title>Station 6 - Face Landmarker</title>
     <link rel="stylesheet" href="style.css">
+    
+    <!-- MediaPipe Vision Tasks für JavaScript laden -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
-    <h1>Kamera-Check</h1>
+    <h1>Kamera- & Gesichtserkennung</h1>
     
-    <!-- Der gewünschte Start-Button -->
     <button id="startButton">Hi, wollen wir anfangen?</button>
 
-    <!-- Das Video-Element, das später das Live-Bild zeigt (zu Beginn versteckt) -->
-    <video id="cameraStream" autoplay playsinline></video>
+    <!-- Container für Video und Status-Anzeige -->
+    <div id="container" style="display: none;">
+        <video id="cameraStream" autoplay playsinline></video>
+        <!-- Ein kleines Textfeld, um den erkannten Yaw-Wert direkt live zu sehen -->
+        <div id="statusBox">Gesicht wird gesucht...</div>
+    </div>
 
-    <!-- Verknüpfung zur externen JavaScript-Datei (defer sorgt dafür, dass das Script lädt, wenn das HTML bereit ist) -->
     <script src="script.js" defer></script>
 
 </body>
