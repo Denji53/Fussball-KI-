@@ -7,34 +7,42 @@ let faceLandmarker = undefined;
 let runningMode = "VIDEO";
 let webcamRunning = false;
 
-// 1. MediaPipe Face Landmarker beim Start initialisieren (laden)
+// 1. MediaPipe Face Landmarker initialisieren (mit stabilerem CDN-Pfad)
 async function createFaceLandmarker() {
-    const { FaceLandmarker, FilesetResolver } = vision;
-    
-    // Die Basis-Dateien für das Modell von Google laden
-    const filesetResolver = await FilesetResolver.forVisionTasks(
-        "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.9/wasm"
-    );
-    
-    faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, {
-        baseOptions: {
-            modelAssetPath: `https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task`,
-            delegate: "GPU"
-        },
-        outputFacialTransformationMatrixes: true, // WICHTIG: Holt uns die Rotationsmatrix[span_3](start_span)[span_3](end_span)[span_4](start_span)[span_4](end_span)!
-        runningMode: runningMode,
-        numFaces: 1
-    });
-    
-    statusBox.innerText = "KI bereit! Klicke auf Start.";
+    try {
+        const { FaceLandmarker, FilesetResolver } = vision;
+        
+        statusBox.innerText = "Lade KI-Modell...";
+
+        const filesetResolver = await FilesetResolver.forVisionTasks(
+            "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.9/wasm"
+        );
+        
+        faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, {
+            baseOptions: {
+                modelAssetPath: `https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task`,
+                delegate: "GPU"
+            },
+            outputFacialTransformationMatrixes: true,
+            runningMode: runningMode,
+            numFaces: 1
+        });
+        
+        statusBox.innerText = "KI bereit! Klicke auf Start.";
+        statusBox.style.color = "blue";
+    } catch (error) {
+        console.error("Fehler beim Laden des KI-Modells:", error);
+        statusBox.innerText = "Fehler beim Laden der KI (Siehe Konsole)";
+        statusBox.style.color = "red";
+    }
 }
 
 createFaceLandmarker();
 
-// 2. Button-Klick: Kamera starten und KI-Schleife aktivieren
+// 2. Button-Klick: Kamera starten
 startButton.addEventListener('click', async () => {
     if (!faceLandmarker) {
-        alert("Das KI-Modell lädt noch einen Moment. Bitte kurz gedulden!");
+        alert("Das KI-Modell ist noch nicht bereit oder das Laden ist fehlgeschlagen.");
         return;
     }
 
@@ -47,7 +55,6 @@ startButton.addEventListener('click', async () => {
         startButton.style.display = 'none';
         webcamRunning = true;
 
-        // Sobald das Video läuft, starten wir die Erkennungs-Schleife
         videoElement.addEventListener('loadeddata', predictWebcam);
 
     } catch (error) {
@@ -56,24 +63,19 @@ startButton.addEventListener('click', async () => {
     }
 });
 
-// 3. Die Endlos-Schleife, die jeden Frame (Bild) analysiert
+// 3. Erkennungs-Schleife
 let lastVideoTime = -1;
 async function predictWebcam() {
     if (!webcamRunning) return;
 
     let startTimeMs = performance.now();
     
-    // Prüfen, ob ein neues Videobild da ist
     if (videoElement.currentTime !== lastVideoTime) {
         lastVideoTime = videoElement.currentTime;
         
-        // Das Bild an den Face Landmarker übergeben
         const results = faceLandmarker.detectForVideo(videoElement, startTimeMs);
 
-        // Prüfen, ob ein Gesicht erkannt wurde
         if (results.facialTransformationMatrixes && results.facialTransformationMatrixes.length > 0) {
-            // Wir haben ein Gesicht! Die Rotationsmatrix ist da.
-            // (In Station 8 wandeln wir das in konkrete Yaw-Werte um, hier siehst du schon, dass es klappt)
             statusBox.innerText = "Gesicht erkannt! ✅";
             statusBox.style.color = "green";
         } else {
@@ -82,7 +84,6 @@ async function predictWebcam() {
         }
     }
 
-    // Schleife für das nächste Bild wiederholen
     if (webcamRunning) {
         window.requestAnimationFrame(predictWebcam);
     }
