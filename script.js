@@ -81,7 +81,7 @@ async function predictWebcam() {
             const rightShoulder = landmarks[12];
             const nose = landmarks[0];
 
-            statusBox.innerText = 'Nase X: ${nose.x.toFixed(2)}';
+            statusBox.innerText = `Nase X: ${nose.x.toFixed(2)}`;
             statusBox.style.color = "green";
         } else {
             statusBox.innerText = "Kein Körper im Bild! ❌";
