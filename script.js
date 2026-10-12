@@ -79,6 +79,8 @@ async function predictWebcam() {
             const landmarks = results.landmarks[0];
             const leftShoulder = landmarks[11];
             const rightShoulder = landmarks[12];
+            const nose = landmarks[0];
+            console.log(x.nose);
 
             statusBox.innerText = "Spieler erkannt! (Rücken/Körper da) ✅";
             statusBox.style.color = "green";
