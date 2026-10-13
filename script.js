@@ -4,6 +4,8 @@ const startButton = document.getElementById('startButton');
 const videoElement = document.getElementById('cameraStream');
 const container = document.getElementById('container');
 const statusBox = document.getElementById('statusBox');
+const slider = document.getElementById("thresholdSlider");
+const sliderValueText = document.getElementById("thresholdValue");
 
 let poseLandmarker = undefined;
 let runningMode = "VIDEO";
@@ -19,7 +21,7 @@ async function createPoseLandmarker() {
         const filesetResolver = await FilesetResolver.forVisionTasks(
             "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.9/wasm"
         );
-        
+
         poseLandmarker = await PoseLandmarker.createFromOptions(filesetResolver, {
             baseOptions: {
                 modelAssetPath: `https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task`,
@@ -28,7 +30,7 @@ async function createPoseLandmarker() {
             runningMode: runningMode,
             numPoses: 1
         });
-        
+
         startButton.disabled = false;
         startButton.innerText = "Hi, wollen wir anfangen?";
         statusBox.innerText = "Pose-KI bereit!";
@@ -49,7 +51,7 @@ startButton.addEventListener('click', async () => {
     try {
         const constraints = { video: { facingMode: 'user' } };
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        
+
         videoElement.srcObject = stream;
         container.style.display = 'block';
         startButton.style.display = 'none';
@@ -67,30 +69,35 @@ async function predictWebcam() {
     if (!webcamRunning) return;
 
     let startTimeMs = performance.now();
-    
+
     if (videoElement.currentTime !== lastVideoTime) {
         lastVideoTime = videoElement.currentTime;
-        
+
         const results = poseLandmarker.detectForVideo(videoElement, startTimeMs);
 
         // Prüfen, ob Körper-Landmarks (Skelettpunkte) gefunden wurden
         if (results.landmarks && results.landmarks.length > 0) {
             // Bei MediaPipe Pose sind Punkt 11 und 12 die linke und rechte Schulter
+            const threshold = parseFloat(slider.value);
+            sliderValueText.innerText = threshold;
             const landmarks = results.landmarks[0];
             const leftShoulder = landmarks[11];
             const rightShoulder = landmarks[12];
             const nose = landmarks[0];
-            const midSchulter = (rightShoulder.x + leftShoulder.x)*0.5;
+            const midSchulter = (rightShoulder.x + leftShoulder.x) * 0.5;
 
-            if(nose.x && nose.x > midSchulter)
-            {
+
+            if (nose.x && nose.x > midSchulter + threshold) {
                 statusBox.innerText = "rechts";
 
             }
-            else if (nose.x && nose.x < midSchulter) {
+            else if (nose.x && nose.x < midSchulter - threshold) {
                 statusBox.innerText = "links";
-            } 
-            
+            }
+            else {
+                statusBox.innerText = "mitti";
+
+            }
             statusBox.style.color = "green";
         } else {
             statusBox.innerText = "Kein Körper im Bild! ❌";
