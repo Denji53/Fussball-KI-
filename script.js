@@ -85,27 +85,32 @@ async function predictWebcam() {
             const rightShoulder = landmarks[12];
             const nose = landmarks[0];
             const midSchulter = (rightShoulder.x + leftShoulder.x) * 0.5;
-            let threshold = 0.1; 
+            let threshold = 0.1;
+            const activePoint = nose || rightEar || leftEar;
 
-            if (nose.x && nose.x > midSchulter + threshold) {
-                statusBox.innerText = "rechts";
+            if (activePoint) {
+                if (nose.x && nose.x > midSchulter + threshold) {
+                    statusBox.innerText = "rechts";
 
-            }
-            else if (nose.x && nose.x < midSchulter - threshold) {
-                statusBox.innerText = "links";
+                }
+                else if (nose.x && nose.x < midSchulter - threshold) {
+                    statusBox.innerText = "links";
+                }
+                else {
+                    statusBox.innerText = "mitti";
+
+                }
+                statusBox.style.color = "green";
             }
             else {
-                statusBox.innerText = "mitti";
-
+                statusBox.innerText = "Kein Körper im Bild! ❌";
+                statusBox.style.color = "red";
             }
-            statusBox.style.color = "green";
-        } else {
-            statusBox.innerText = "Kein Körper im Bild! ❌";
-            statusBox.style.color = "red";
-        }
-    }
 
-    if (webcamRunning) {
-        window.requestAnimationFrame(predictWebcam);
+        }
+
+        if (webcamRunning) {
+            window.requestAnimationFrame(predictWebcam);
+        }
     }
 }
