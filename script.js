@@ -80,8 +80,17 @@ async function predictWebcam() {
             const leftShoulder = landmarks[11];
             const rightShoulder = landmarks[12];
             const nose = landmarks[0];
+            const midSchulter = (rightShoulder + leftShoulder)*0.5;
 
-            statusBox.innerText = `Nase X: ${nose.x.toFixed(2)}`;
+            if(nose && nose > midSchulter)
+            {
+                statusBox.innerText = "rechts";
+
+            }
+            else if (nose && nose < midSchulter) {
+                statusBox.innerText = "links";
+            } 
+            
             statusBox.style.color = "green";
         } else {
             statusBox.innerText = "Kein Körper im Bild! ❌";
