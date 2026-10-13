@@ -80,14 +80,14 @@ async function predictWebcam() {
             const leftShoulder = landmarks[11];
             const rightShoulder = landmarks[12];
             const nose = landmarks[0];
-            const midSchulter = (rightShoulder + leftShoulder)*0.5;
+            const midSchulter = (rightShoulder.x + leftShoulder.x)*0.5;
 
-            if(nose && nose > midSchulter)
+            if(nose.x && nose.x > midSchulter)
             {
                 statusBox.innerText = "rechts";
 
             }
-            else if (nose && nose < midSchulter) {
+            else if (nose.x && nose.x < midSchulter) {
                 statusBox.innerText = "links";
             } 
             
