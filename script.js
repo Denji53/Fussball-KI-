@@ -4,8 +4,8 @@ const startButton = document.getElementById('startButton');
 const videoElement = document.getElementById('cameraStream');
 const container = document.getElementById('container');
 const statusBox = document.getElementById('statusBox');
-const slider = document.getElementById("thresholdSlider");
-const sliderValueText = document.getElementById("thresholdValue");
+//const slider = document.getElementById("thresholdSlider");
+//const sliderValueText = document.getElementById("thresholdValue");
 
 let poseLandmarker = undefined;
 let runningMode = "VIDEO";
@@ -78,14 +78,14 @@ async function predictWebcam() {
         // Prüfen, ob Körper-Landmarks (Skelettpunkte) gefunden wurden
         if (results.landmarks && results.landmarks.length > 0) {
             // Bei MediaPipe Pose sind Punkt 11 und 12 die linke und rechte Schulter
-            const threshold = parseFloat(slider.value);
-            sliderValueText.innerText = threshold;
+            //const threshold = parseFloat(slider.value);
+            //sliderValueText.innerText = threshold;
             const landmarks = results.landmarks[0];
             const leftShoulder = landmarks[11];
             const rightShoulder = landmarks[12];
             const nose = landmarks[0];
             const midSchulter = (rightShoulder.x + leftShoulder.x) * 0.5;
-
+            let threshold = 0.1; 
 
             if (nose.x && nose.x > midSchulter + threshold) {
                 statusBox.innerText = "rechts";
