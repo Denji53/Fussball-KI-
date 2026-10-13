@@ -89,11 +89,11 @@ async function predictWebcam() {
             const activePoint = nose || rightEar || leftEar;
 
             if (activePoint) {
-                if (nose.x && nose.x > midSchulter + threshold) {
+                if (activePoint.x && nose.x > midSchulter + threshold) {
                     statusBox.innerText = "rechts";
 
                 }
-                else if (nose.x && nose.x < midSchulter - threshold) {
+                else if (activePoint.x && nose.x < midSchulter - threshold) {
                     statusBox.innerText = "links";
                 }
                 else {
